@@ -1,0 +1,31 @@
+begin
+  //Initialization user page and clear screen
+  userPage()
+  cls()
+  //If it has no power, enable arm power
+  if (!isPowered())
+    enablePower()
+  endIf
+  //Define the movement speed of the robot
+  mNomSpeed.vel = 10
+
+  //Show title
+  putln("#######################")
+  putln("# THE STAUBLI SURGEON #")
+  putln("#######################")
+
+  //Move TX60 to start position
+  movej(startPos, tool1, mNomSpeed)
+  waitEndMove()
+
+  //Initialize force sensor
+  call initSensor()
+  //Save current position each 1.5 second
+  taskCreate "saveCurrentPos", 15, saveCurrentPos()
+  //Task that expects to receive orders from the client and executes them
+  taskCreate "socketTransfer", 20, socketTransfer()
+  //Task that performs readings of the force sensor and moments each 4 milliseconds
+  taskCreateSync "sensorReader", 0.004, bDetectCollisio, controlFTCL()
+  //Task that updates the read data and displays them on the screen every 0.5 seconds
+  taskCreate "showForces", 17, showForceData()
+end

@@ -1,0 +1,11 @@
+begin
+  //If there is no variable that blocks it, not the forces exceed any axis, save the current point as previous
+  while true
+    if !waitDocResponse
+      if nFuerzasMomento[0] &gt;= -10 and nFuerzasMomento[1] &gt;= -10 and nFuerzasMomento[2] &gt;= -10
+        previousPoint = here(tool1, terminalElement)
+      endIf
+      delay(1.5)
+    endIf
+  endWhile
+end

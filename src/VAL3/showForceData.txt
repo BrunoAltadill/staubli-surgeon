@@ -1,0 +1,34 @@
+begin
+  //Show forces and moments through the MCP console screen
+  while true
+    cls()
+
+    putln("#######################")
+    putln("# THE STAUBLI SURGEON #")
+    putln("#######################")
+    putln("")
+    putln("COMMUNICATION")
+    putln("-------------")
+    putln("Wait instructions from socket...")
+    putln("")
+    putln("FORCES [N] / MOMENTS [Nm]")
+    putln("--------------")
+    put("X: ")
+    put(nFuerzasMomento[1])
+    put(" N / ")
+    put(nFuerzasMomento[4])
+    putln(" Nm")
+    put("Y: ")
+    put(nFuerzasMomento[2])
+    put(" N / ")
+    put(nFuerzasMomento[5])
+    putln(" Nm")
+    put("Z: ")
+    put(nFuerzasMomento[0])
+    put(" N / ")
+    put(nFuerzasMomento[3])
+    putln(" Nm")
+
+    delay(0.5)
+  endWhile
+end

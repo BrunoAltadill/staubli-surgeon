@@ -1,0 +1,35 @@
+begin
+  //Clean the communication channel
+  clearBuffer(serial)
+  //Send request to the sensor to send us the data
+  sioSet(serial, sensorCommand[1])
+  //Read the data we received from the sensor
+  sioGet(serial, sensorInput)
+  //Process sensor response
+  if (sensorInput != 77)
+    status = 1
+    putln("ERROR: Impossible read force/torqe from sensor!")
+  else
+    status = 0
+    sensorReturn = sioGet(serial, nLectura)
+    for nI = 0 to 5
+      if (nI &lt; 3)
+        //Read, process and save forces
+        if (nLectura[(nI * 2) + 1] &gt; 127)
+          nFuerzasMomento[nI] = ((-nLectura[(nI * 2)] + ((nLectura[(nI * 2) + 1] - 255) * 256)) / 32)
+        else
+          nFuerzasMomento[nI] = (nLectura[(nI * 2)] + (nLectura[(nI * 2) + 1] * 256)) / 32
+        endIf
+      else
+        //Read, process and save moments
+        if(nLectura[(nI * 2) + 1] &gt; 127)
+          nFuerzasMomento[nI] = ((-nLectura[(nI * 2)] + ((nLectura[(nI * 2) + 1] - 255) * 256)) / 1024)
+        else
+          nFuerzasMomento[nI] = (nLectura[(nI * 2)]+(nLectura[(nI * 2) + 1] * 256)) / 1024
+        endIf
+      endIf
+    endFor
+    status = nLectura[12] + nLectura[13] * 256
+    clearBuffer(serial)
+  endIf
+end

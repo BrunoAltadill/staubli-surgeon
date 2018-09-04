@@ -1,0 +1,14 @@
+begin
+  //Disable movement
+  stoped = true
+  //Casting velocity value to numeric
+  toNum(left(command, find(command, ";")), newVelocity, bOk)
+  //Stop current movement
+  stopMove()
+  //Change velocity
+  mNomSpeed.vel = newVelocity
+  //Restart previous movement
+  restartMove()
+  //Enable movement
+  stoped = false
+end

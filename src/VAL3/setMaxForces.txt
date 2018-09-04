@@ -1,0 +1,14 @@
+begin
+  //Set Z max force
+  auxNum = left(command, find(command, ";"))
+  toNum(auxNum, maxForces[0], bOk)
+  command = delete(command, len(auxNum) + 1, 0)
+  //Set X max force
+  auxNum = left(command, find(command, ";"))
+  toNum(auxNum, maxForces[1], bOk)
+  command = delete(command, len(auxNum) + 1, 0)
+  //Set Y max force
+  auxNum = left(command, find(command, ";"))
+  toNum(auxNum, maxForces[2], bOk)
+  command = delete(command, len(auxNum) + 1, 0)
+end

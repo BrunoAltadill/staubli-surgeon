@@ -1,0 +1,27 @@
+begin
+  //Stop TX60 movements
+  resetMotion()
+
+  //Delete all tasks
+  taskKill("saveCurrentPos")
+  taskKill("showForces")
+  taskKill("sensorReader")
+  taskKill("socketTransfer")
+  stoped = true
+  waitDocResponse = false
+
+  //Move to initial position
+  movej(initialPos, tool1, mNomSpeed)
+  waitEndMove()
+
+  //Disable power
+  if (isPowered())
+    disablePower()
+  endIf
+
+  //Show ending popup message
+  popUpMsg("THE END!")
+
+  //Clear user screen
+  cls()
+end

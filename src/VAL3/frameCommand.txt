@@ -1,0 +1,34 @@
+begin
+  if !stoped
+    //Process command for extract movements
+    for idx = 0 to 2 step 1
+      toNum(left(command, find(command, ";")), frameMove[idx], bOk)
+      if frameMove[idx] &lt; 0
+        command = delete(command, 3, 0)
+      else
+        command = delete(command, 2, 0)
+      endIf
+    endFor
+
+    //Check if exist 0 in some axis
+    if frameMove[0] == 0 or frameMove[1] == 0 or frameMove[2] == 0
+      resetMotion()
+    endIf
+
+    //Calculate farest point in each axis
+    if frameMove[0] != 0 or frameMove[1] != 0 or frameMove[2] != 0
+      currentPoint = here(tool1, terminalElement)
+      newPoint = appro(currentPoint, {frameMove[0], frameMove[1], frameMove[2], 0, 0, 0})
+      auxBool = pointToJoint(tool1, herej(), newPoint, nextPos)
+      while(auxBool and isInRange(nextPos))
+        currentPoint = newPoint
+        newPoint = appro(newPoint, {frameMove[0], frameMove[1], frameMove[2], 0, 0, 0})
+        auxBool = pointToJoint(tool1, herej(), newPoint, nextPos)
+      endWhile
+
+      //Start movement to the farest point
+      resetMotion()
+      movel(currentPoint, tool1, mNomSpeed)
+    endIf
+  endIf
+end

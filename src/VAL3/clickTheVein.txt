@@ -1,0 +1,19 @@
+begin
+  //Process the doctor's response and perform the task or not
+  doctorResponse = left(command, find(command, ";"))
+  if doctorResponse == "y"
+    //Click the vein
+    movel(appro(here(tool1, terminalElement), {0, 3, 0, 0, 0, 0}), tool1, mNomSpeed)
+    waitEndMove()
+    //Wait 5 seconds
+    delay(5)
+  endIf
+
+  //Go to the previous point of the puncture
+  movel(previousPoint, tool1, mNomSpeed)
+  waitEndMove()
+
+  //Disable blocking variables
+  stoped = false
+  waitDocResponse = false
+end

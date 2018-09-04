@@ -1,0 +1,55 @@
+begin
+  //Infinite loop, since the program is an asynchronous task
+  while (true)
+    //If we are waiting for a response from the doctor, do not perform sensor readings
+    if !waitDocResponse
+      //Read sensor Schunk FTCL 50-80 forces and moments
+      call readSensor()
+
+      //Perform according to the selected maneuvering mode (1-&gt;Standard // 2-&gt;Follow irregular path // 3-&gt;Click the vein)
+      switch operationMode
+        case 1
+          //If the reading of forces exceeds the maximum allowed, return to the immediately previous point
+          if nFuerzasMomento[0] &lt; maxForces[0] or nFuerzasMomento[1] &lt; maxForces[1] or nFuerzasMomento[2] &lt; maxForces[2]
+            stoped = true
+            resetMotion()
+            movel(previousPoint, tool1, mNomSpeed)
+            waitEndMove()
+            stoped = false
+          endIf
+        break
+        case 2
+          //In case of exceeding the force on the Y axis, reduce the position 5 units
+          if nFuerzasMomento[2] &lt; maxForces[2]
+            stoped = true
+            resetMotion()
+            movel(appro(here(tool1, terminalElement), {0, -5, 0, 0, 0, 0}), tool1, mNomSpeed)
+            waitEndMove()
+            stoped = false
+          endIf
+          //In case of exceeding the force on the X or Z axis, reduce the position of the Y axis 5 units continuously, until the force readings are within the margins
+          if nFuerzasMomento[0] &lt; maxForces[0] or nFuerzasMomento[1] &lt; maxForces[1] or nFuerzasMomento[0] &gt; (maxForces[0] * -1) or nFuerzasMomento[1] &gt; (maxForces[1] * -1)
+            stoped = true
+            resetMotion()
+            while nFuerzasMomento[0] &lt; maxForces[0] or nFuerzasMomento[1] &lt; maxForces[1] or nFuerzasMomento[0] &gt; (maxForces[0] * -1) or nFuerzasMomento[1] &gt; (maxForces[1] * -1)
+              movel(appro(here(tool1, terminalElement), {0, -5, 0, 0, 0, 0}), tool1, mNomSpeed)
+              waitEndMove()
+              call readSensor()
+            endWhile
+            stoped = false
+          endIf
+        break
+        case 3
+          //If the force on any axis has been exceeded, stop the movement and send data to the user to make the decision as to whether or not to perform the puncture
+          if nFuerzasMomento[0] &lt; maxForces[0] or nFuerzasMomento[1] &lt; maxForces[1] or nFuerzasMomento[2] &lt; maxForces[2]
+            stoped = true
+            waitDocResponse = true
+            resetMotion()
+            sioSet(socketSurgeon, 65)
+            sioSet(socketSurgeon, 59)
+          endIf
+        break
+      endSwitch
+    endIf
+  endWhile
+end

@@ -1,0 +1,24 @@
+begin
+  //Link to serial port
+  sioLink(serial, io:serial1)
+
+  //Initialize Schunk FTCL 50-80
+  clearBuffer(serial)
+  sioSet(serial, sensorCommand[0])
+  sioGet(serial, sensorInput)
+  nCollision = false
+  if(sensorInput != 123)
+    status = 1
+    putln("ERROR: Impossible initialize force sensor to 0!")
+  else
+    putln("Sensor initialized to 0!")
+    sioGet(serial, sensorReturn)
+    status = sensorReturn[0] + sensorReturn[1] * 256
+    clearBuffer(serial)
+  endIf
+
+  //Setup the default max forces
+  maxForces[0] = -10
+  maxForces[1] = -10
+  maxForces[2] = -10
+end

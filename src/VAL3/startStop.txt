@@ -1,0 +1,10 @@
+begin
+  //Flip the value of the control variable stopped
+  if (stoped)
+    stoped = false
+    restartMove()
+  else
+    stoped = true
+    stopMove()
+  endIf
+end

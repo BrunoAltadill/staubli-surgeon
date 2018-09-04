@@ -1,0 +1,40 @@
+begin
+  if !stoped
+    //Process command for extract movements
+    toNum(left(command, find(command, ";")), axis, bOk)
+    command = delete(command, 2, 0)
+    toNum(left(command, find(command, ";")), direction, bOk)
+
+    //Calculate next position
+    nextJoint = herej()
+    switch axis
+      case 1
+        nextJoint.j1 = direction * maxJointPos[0]
+      break
+      case 2
+        nextJoint.j2 = direction * maxJointPos[1]
+      break
+      case 3
+        nextJoint.j3 = direction * maxJointPos[2]
+      break
+      case 4
+        nextJoint.j4 = direction * maxJointPos[3]
+      break
+      case 5
+        nextJoint.j5 = direction * maxJointPos[4]
+      break
+      case 6
+        nextJoint.j6 = direction * maxJointPos[5]
+      break
+      default
+        //Do nothing...
+      break
+    endSwitch
+
+    //Start movement to next position
+    resetMotion()
+    if direction != 0
+      movej(nextJoint, tool1, mNomSpeed)
+    endIf
+  endIf
+end
