@@ -187,7 +187,6 @@ void Control::setForces() {
 void Control::monitorizationSocket() {
     while (true) {
         string data = socket.read();
-        cout << "Data recived: " << data << endl;
         if (data == "A") {
             suspended = true;
             string click;
